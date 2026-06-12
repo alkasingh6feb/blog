@@ -7,13 +7,28 @@ from pydantic import BaseModel
 app = FastAPI()
 
 # pyrefly: ignore [unknown-name]
+# class User(BaseModel):
+#     name:str
+#     age:int
+
+# @app.post("/create-user")
+# def create_user(user:User):
+#     return {
+#         "msg" : "user created",
+#         "data" :user
+#     }
+
+class Address(BaseModel):
+    city:str
+    pin_code:str
+
 class User(BaseModel):
     name:str
     age:int
+    address:Address
 
-@app.post("/create-user")
+@app.post("/create_user")
 def create_user(user:User):
-    return {
-        "msg" : "user created",
-        "data" :user
+    return{
+        "msg":"user created"
     }
