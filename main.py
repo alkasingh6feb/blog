@@ -1,34 +1,43 @@
-# pyrefly: ignore [missing-import]
+
 from fastapi import FastAPI
-# pyrefly: ignore [missing-import]
 from pydantic import BaseModel
 
-# pyrefly: ignore [unknown-name]
 app = FastAPI()
 
-# pyrefly: ignore [unknown-name]
-# class User(BaseModel):
-#     name:str
-#     age:int
+todos = []
+class Todo(BaseModel):
+    id:int
+    title:str
+    completed:bool
 
-# @app.post("/create-user")
-# def create_user(user:User):
-#     return {
-#         "msg" : "user created",
-#         "data" :user
-#     }
+@app.post("/todos")
+def create_todo(todo:Todo):
+    todos.append(todo)
+    return {"message":"Todo added successfully", "data":todo}
 
-class Address(BaseModel):
-    city:str
-    pin_code:str
+@app.get("/todos")
+def get_todos():
+    return todos
 
-class User(BaseModel):
-    name:str
-    age:int
-    address:Address
-
-@app.post("/create_user")
-def create_user(user:User):
-    return{
-        "msg":"user created"
-    }
+@app.get("/todos/{todo_id}")
+def get_todo(todo_id:int):
+    for todo in todos:
+        if todo.id == todo_id:
+            return todo
+    return {"message":"todo not found"}
+    
+@app.put("/todos{todo_id}")
+def update_todo(todo_id:int,update_todo:Todo):
+    for index,todo in enumerate(todos):
+        if todo.id == todo_id:
+            todos[index] = update_todo
+            return {"message":"todo updated successfully", "data":update_todo}
+    return {"message":"todo not found"}
+    
+@app.delete("/todos{todo_id}")
+def delete_todo(todo_id:int):
+    for index,todo in enumerate(todos):
+        if todo.id == todo_id:
+            todos.pop(index)
+            return {"message":"todo deleted successfully"}
+    return {"message":"todo not found"}
