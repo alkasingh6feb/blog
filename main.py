@@ -1,26 +1,28 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+# pyrefly: ignore [missing-import]
+from fastapi import FastAPI, status, HTTPException
 
-app = FastAPI()
+app =FastAPI()
 
-class User(BaseModel):
-    id: int
-    name: str
-    email:str
-    password:str
-
-class UserResponse(BaseModel):
-    id:int
-    name:str
-    email:str
-
-@app.get("/user", response_model=UserResponse)
-def get_user():
-    return {
-        "id":1,
+@app.get("/users")
+def get_users():
+    return{
         "name":"alka",
-        "email":"alka@gmail.com"
-        
+        "age": 24,
+        "data":"data fetched"
     }
-  
 
+@app.get("/users/{user_id}")
+def get_singal_user(user_id:int):
+    # pyrefly: ignore [parse-error]
+    if user_id !=1:
+        
+        raise HTTPException(
+            status_code=404,
+            detail="user not found" 
+        )
+
+    return{
+        "name":"alka",
+        "age": 24,
+        "data":"data fetched"
+    }
